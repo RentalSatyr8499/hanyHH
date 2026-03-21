@@ -49,6 +49,10 @@ class _AddAccessiblePointScreenState extends State<AddAccessiblePointScreen> {
                   value: 'other',
                   child: Text('Other'),
                 ),
+                DropdownMenuItem(
+                  value: 'stairs',
+                  child: Text('stairs'),
+                ),
               ],
               onChanged: (value) {
                 setState(() {

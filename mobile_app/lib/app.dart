@@ -12,7 +12,8 @@ class App extends StatelessWidget {
     );
 
     return MaterialApp(
-      title: 'Accessible Routing',
+      debugShowCheckedModeBanner: false,
+      title: 'Accessibilly compass',
       theme: ThemeData(
         useMaterial3: true,
         colorSchemeSeed: Colors.blue,

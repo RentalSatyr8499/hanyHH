@@ -56,7 +56,7 @@ class _WoodButton extends StatelessWidget {
 }
 
 /// ------------------------------------------------------------
-/// BEGIN ROUTE BUTTON (wood + centered + fade-in)
+/// BEGIN ROUTE BUTTON (wood + centered in middle of screen)
 /// ------------------------------------------------------------
 class BeginRouteButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -68,7 +68,7 @@ class BeginRouteButton extends StatelessWidget {
       label: "Begin Route",
       width: 240,
       height: 80,
-      fontSize: 30,
+      fontSize: 50,
       onTap: onPressed,
     );
   }
@@ -99,7 +99,7 @@ class InstructionBanner extends StatelessWidget {
           textAlign: TextAlign.center,
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 28,
+            fontSize: 28, // larger
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -109,7 +109,7 @@ class InstructionBanner extends StatelessWidget {
 }
 
 /// ------------------------------------------------------------
-/// NEXT STEP BUTTON (wood + fade-in)
+/// NEXT STEP BUTTON (keep original FAB style, just change label)
 /// ------------------------------------------------------------
 class NextStepButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -117,18 +117,26 @@ class NextStepButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _WoodButton(
-      label: "Next Step",
-      width: 180,
-      height: 65,
-      fontSize: 24,
-      onTap: onPressed,
+    return AnimatedOpacity(
+      opacity: 1.0,
+      duration: const Duration(milliseconds: 600),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            backgroundColor: Colors.green,
+            onPressed: onPressed,
+            child: const Icon(Icons.arrow_forward),
+          ),
+        ],
+      ),
     );
   }
 }
 
+
 /// ------------------------------------------------------------
-/// END ROUTE BUTTON (wood + fade-in)
+/// END ROUTE BUTTON (keep original FAB style, icon only)
 /// ------------------------------------------------------------
 class EndRouteButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -136,12 +144,14 @@ class EndRouteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _WoodButton(
-      label: "End Route",
-      width: 180,
-      height: 65,
-      fontSize: 24,
-      onTap: onPressed,
+    return AnimatedOpacity(
+      opacity: 1.0,
+      duration: const Duration(milliseconds: 600),
+      child: FloatingActionButton(
+        backgroundColor: Colors.red,
+        onPressed: onPressed,
+        child: const Icon(Icons.stop),
+      ),
     );
   }
 }

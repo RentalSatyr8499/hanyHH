@@ -59,7 +59,7 @@ class _LocationField extends StatelessWidget {
     );
 
     const valueStyle = TextStyle(
-      fontFamily: 'CustomFont2',
+
       color: Colors.white,
       fontSize: 18,
       height: 1.2,

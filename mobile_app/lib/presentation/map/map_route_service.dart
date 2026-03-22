@@ -40,7 +40,7 @@ class MapRouteService {
     final List<mbx.Position> currentSegment = [];
     
     // Adjust steps for speed: i += 1 is smooth, i += 5 is faster
-    for (int i = 0; i < fullCoords.length; i++) {
+    for (int i = 0; i < fullCoords.length; i) {
       currentSegment.add(fullCoords[i]);
 
       final line = mbx.LineString(coordinates: currentSegment);

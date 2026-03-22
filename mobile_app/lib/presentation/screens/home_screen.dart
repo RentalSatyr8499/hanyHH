@@ -139,6 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
+      top: false,
       bottom: false,
       child: Stack(
         children: [
@@ -166,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // BEGIN ROUTE BUTTON
           if (mode == nm.NavigationMode.routeReady)
             Positioned(
-              bottom: 20,
+              top: MediaQuery.of(context).size.height * 0.45, // ~middle of screen
               left: 20,
               right: 20,
               child: BeginRouteButton(onPressed: _startNavigation),
@@ -186,16 +187,16 @@ class _HomeScreenState extends State<HomeScreen> {
           // NEXT STEP BUTTON
           if (mode == nm.NavigationMode.navigating)
             Positioned(
-              bottom: 20,
-              left: 20,
+              bottom: 100,
+              left: 40,
               child: NextStepButton(onPressed: _nextStep),
             ),
 
           // END ROUTE BUTTON
           if (mode == nm.NavigationMode.navigating)
             Positioned(
-              bottom: 20,
-              right: 20,
+              bottom: 100,
+              right: 40,
               child: EndRouteButton(onPressed: _endNavigation),
             ),
           ],

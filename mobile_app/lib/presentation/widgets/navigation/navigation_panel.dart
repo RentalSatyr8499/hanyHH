@@ -60,26 +60,28 @@ class NavigationPanel extends StatelessWidget {
             const SizedBox(height: 1),
 
             // Buttons row
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
+            Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min, // shrink to fit content
+              crossAxisAlignment: CrossAxisAlignment.center, // align buttons properly
               children: [
-                Expanded(
-                  child: Center(
-                    child: _WoodButton(
-                      label: 'FIND ROUTE',
-                      width: 240,
-                      height: 72,
-                      fontSize: 28,
-                      onTap: onFindRoute,
-                    ),
-                  ),
+                _WoodButton(
+                  label: 'Find Route',
+                  width: 240,
+                  height: 72,
+                  fontSize: 50,
+                  onTap: onFindRoute,
                 ),
-                const SizedBox(width: 10),
+
+                const SizedBox(width: 12),
+
                 _WoodPlusButton(
                   onTap: onAddAccessiblePoint,
                 ),
               ],
             ),
+          )
+
           ],
         ),
       ),
@@ -164,7 +166,7 @@ class _WoodPlusButton extends StatelessWidget {
                 '+',
                 style: TextStyle(
                   fontFamily: 'CustomFont2',
-                  fontSize: 28,
+                  fontSize: 60,
                   fontWeight: FontWeight.w700,
                   color: Color(0xFF2E1E12),
                   height: 1,

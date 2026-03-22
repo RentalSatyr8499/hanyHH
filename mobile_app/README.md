@@ -2,7 +2,7 @@
 
 > **Community maps, smarter routes.**
 
-**AccessBilly Compass** is our **HooHacks (Finance track)** Flutter app: **accessibility-aware routing** and **crowdsourced points** (ratings, lookups, adds). You ask for routes that fit real constraints, not just the shortest line. How you move changes day to day (energy, pain, gear), so you set **per-trip** preferences (stairs, wheelchair-only, benches, indoor, etc.) and send that with the route request. The community side fills in what big maps skip: what’s actually true on the ground.
+**AccessBilly Compass** is our **HooHacks (Accessibility track)** Flutter app: **accessibility-aware routing** and **crowdsourced points** (ratings, lookups, adds). You ask for routes that fit real constraints, not just the shortest line. How you move changes day to day (energy, pain, gear), so you set **per-trip** preferences (stairs, wheelchair-only, benches, indoor, etc.) and send that with the route request. The community side fills in what big maps skip: what’s actually true on the ground.
 
 ## Why this matters
 
@@ -195,6 +195,7 @@ Wood textures, fonts, map pin, hooves SFX, and optional **Noiz AI** voice need p
 | **Font 1 (headings / labels)** | Confetti Western | [DaFont](https://www.dafont.com/confetti-western.font) → `Confetti_Western.otf` |
 | **Font 2 (buttons / display)** | Carnevalee Freakshow | [DaFont](https://www.dafont.com/carnivalee-freakshow.font) → `Carnevalee_Freakshow.ttf` |
 | **Map pin** | Map markers | [Flaticon](https://www.flaticon.com/free-icon/maps-and-flags_447031) → `assets/marker.png` |
+| **Cowboy hat** | Brand flair on map | [Flaticon cowboy hat](https://www.flaticon.com/free-icon/cowboy-hat_2819370?term=cowboy+hat&related_id=2819370) → `assets/cowboy_hat.png` |
 | **Horse hooves / gallop** | Optional SFX | [Freesound Horse Galloping.wav](https://freesound.org/people/Jordishaw/sounds/490751/) by Jordishaw ([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)) |
 | **Generated voice / audio** | Optional voiceover or UI audio | **[Noiz AI](https://noiz.ai/)** (see terms); list filenames in `ATTRIBUTIONS.md` when finalized |
 

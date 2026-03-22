@@ -7,6 +7,7 @@ import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mbx;
 import '../../data/services/location_service.dart';
 import 'package:flutter/services.dart';   // for rootBundle, ByteData
 import '../map/app_map_controller.dart';
+import '../../theme/access_assets.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -66,7 +67,28 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Column(
         children: [
-          Expanded(flex: 6, child: MapView(onMapCreated: _onMapCreated)),
+          Expanded(
+            flex: 6,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                MapView(onMapCreated: _onMapCreated),
+                Positioned(
+                  top: 8,
+                  left: 8,
+                  child: SafeArea(
+                    child: Image.asset(
+                      AccessAssets.cowboyHat,
+                      width: 44,
+                      height: 44,
+                      filterQuality: FilterQuality.medium,
+                      errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
           Expanded(
             flex: 4,
             child: NavigationPanel(

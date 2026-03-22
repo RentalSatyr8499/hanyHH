@@ -50,6 +50,12 @@ This file lists sources and license terms for creative assets used in **AccessBi
 - **Attribution:** Per [Flaticon license terms](https://support.flaticon.com/s/article/Attribution-How-when-and-where-TP-33070998), free use with attribution typically requires credit such as:  
   **“Icon by Flaticon”** or the author line shown on the icon page — **copy the exact attribution string from your Flaticon download page** and keep it in app credits / README.
 
+### Flaticon — cowboy hat (branding)
+
+- **Source:** [Cowboy hat (Flaticon)](https://www.flaticon.com/free-icon/cowboy-hat_2819370?term=cowboy+hat&related_id=2819370)
+- **Bundled file:** `assets/cowboy_hat.png` (corner badge on home map)
+- **Attribution:** Same as other Flaticon icons; use the attribution line from the download page.
+
 ---
 
 ## Sound (optional / if bundled)
@@ -78,5 +84,6 @@ This file lists sources and license terms for creative assets used in **AccessBi
 | Carnevalee Freakshow | [DaFont](https://www.dafont.com/carnivalee-freakshow.font) | Personal free; check commercial |
 | Confetti Western | [DaFont](https://www.dafont.com/confetti-western.font) | Non-commercial free; commercial via Chequered Ink |
 | Map marker | [Flaticon](https://www.flaticon.com/free-icon/maps-and-flags_447031) | Flaticon terms + attribution |
+| Cowboy hat | [Flaticon](https://www.flaticon.com/free-icon/cowboy-hat_2819370) | Flaticon terms + attribution |
 | Horse SFX (if used) | [Freesound](https://freesound.org/people/Jordishaw/sounds/490751/) | CC BY 4.0, credit Jordishaw |
 | AI-generated audio (if used) | [Noiz AI](https://noiz.ai/) | Per Noiz AI terms |

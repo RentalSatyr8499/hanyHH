@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     routeRepository = widget.routeRepository;
   }
-  
+
   void _onMapCreated(mbx.MapboxMap controller) {
     mapController.init(controller);
   }
@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
 
-    // TODO: draw route on map
+    mapController.drawRoute(route.toPositions());
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mbx;
+
 class RouteModel {
   final double distanceMeters;
   final double durationSeconds;
@@ -19,5 +21,11 @@ class RouteModel {
         ),
       ),
     );
+  }
+
+  List<mbx.Position> toPositions() {
+    return coordinates
+        .map((c) => mbx.Position(c[0], c[1])) // [lng, lat]
+        .toList();
   }
 }

@@ -13,15 +13,19 @@ class RouteModel {
 
   factory RouteModel.fromJson(Map<String, dynamic> json) {
     return RouteModel(
-      distanceMeters: json['distance_meters'],
-      durationSeconds: json['duration_seconds'],
-      coordinates: List<List<double>>.from(
-        json['geometry']['coordinates'].map(
-          (c) => [c[0], c[1]],
-        ),
-      ),
+      distanceMeters: (json['distance_meters'] as num).toDouble(),
+      durationSeconds: (json['duration_seconds'] as num).toDouble(),
+      coordinates: (json['geometry']['coordinates'] as List)
+          .map<List<double>>(
+            (c) => [
+              (c[0] as num).toDouble(),
+              (c[1] as num).toDouble(),
+            ],
+          )
+          .toList(),
     );
   }
+
 
   List<mbx.Position> toPositions() {
     return coordinates

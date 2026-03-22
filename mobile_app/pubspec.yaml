@@ -70,4 +70,8 @@ flutter:
   assets:
     - .env
     - assets/marker.png
- 
+    - assets/wood-background.jpg
+  fonts:
+      - family: CustomFont2
+        fonts:
+          - asset: assets/font2.otf

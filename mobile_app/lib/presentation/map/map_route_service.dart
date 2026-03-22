@@ -5,21 +5,17 @@ class MapRouteService {
   static const String _sourceId = "route-source";
   static const String _layerId = "route-layer";
 
-  bool _layerAdded = false;
 
   Future<void> drawRoute(mbx.MapboxMap map, List<mbx.Position> coords) async {
     if (coords.isEmpty) return;
 
-    // 1. Build a LineString geometry
     final line = mbx.LineString(coordinates: coords);
-
-    // 2. Create/update the GeoJSON source
     await _setGeoJsonSource(map, line);
 
-    // 3. Add the line layer if needed
-    if (!_layerAdded) {
+    // Check the style directly instead of using a local boolean
+    final exists = await map.style.getLayer(_layerId);
+    if (exists == null) {
       await _addRouteLayer(map);
-      _layerAdded = true;
     }
   }
 
@@ -54,6 +50,17 @@ class MapRouteService {
         id: _layerId,
         sourceId: _sourceId,
         lineColor: 0xFF0066FF, // blue
+        lineWidth: 5.0,
+        lineJoin: mbx.LineJoin.ROUND,
+        lineCap: mbx.LineCap.ROUND,
+      ),
+    );
+    await map.style.addLayer(
+      mbx.LineLayer(
+        id: _layerId,
+        sourceId: _sourceId,
+        // Use the lineProperty fields for settings
+        lineColor: 14233648, // Pass the integer value
         lineWidth: 5.0,
         lineJoin: mbx.LineJoin.ROUND,
         lineCap: mbx.LineCap.ROUND,

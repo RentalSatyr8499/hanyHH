@@ -15,31 +15,41 @@ class SourceDestinationFields extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const customFont = TextStyle(
+      fontFamily: 'CustomFont2',
+      fontSize: 16,
+    );
+
     return Column(
       children: [
         TextField(
-          decoration: const InputDecoration(
+          style: customFont, // typed text
+          decoration: InputDecoration(
             labelText: 'Source',
-            prefixIcon: Icon(Icons.my_location),
+            labelStyle: customFont, // floating label
+            hintStyle: customFont,  // non-floating label
+            prefixIcon: const Icon(Icons.my_location),
           ),
           onChanged: (value) {
             request.source = value;
             onSourceChanged(value);
-          }
+          },
         ),
         const SizedBox(height: 12),
         TextField(
-          decoration: const InputDecoration(
+          style: customFont,
+          decoration: InputDecoration(
             labelText: 'Destination',
-            prefixIcon: Icon(Icons.location_on),
+            labelStyle: customFont,
+            hintStyle: customFont,
+            prefixIcon: const Icon(Icons.location_on),
           ),
           onChanged: (value) {
             request.destination = value;
             onDestinationChanged(value);
-          }
+          },
         ),
       ],
     );
   }
 }
-

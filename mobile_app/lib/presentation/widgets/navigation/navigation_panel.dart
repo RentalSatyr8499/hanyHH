@@ -20,30 +20,38 @@ class NavigationPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: Row(
-            children: [
-              Expanded(
-                child: SourceDestinationFields(
-                  request: request,
-                  onSourceChanged: onSourceChanged,
-                  onDestinationChanged: onDestinationChanged,
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/wood-background.jpg'),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Column(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  child: SourceDestinationFields(
+                    request: request,
+                    onSourceChanged: onSourceChanged,
+                    onDestinationChanged: onDestinationChanged,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: RouteConfigPanel(request: request),
-              ),
-            ],
+                const SizedBox(width: 16),
+                Expanded(
+                  child: RouteConfigPanel(request: request),
+                ),
+              ],
+            ),
           ),
-        ),
-        ElevatedButton(
-          onPressed: onFindRoute,
-          child: const Text("Find Accessible Route"),
-        ),
-      ],
+          ElevatedButton(
+            onPressed: onFindRoute,
+            child: const Text("Find Accessible Route"),
+          ),
+        ],
+      ),
     );
   }
 }

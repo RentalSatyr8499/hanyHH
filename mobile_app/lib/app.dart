@@ -8,7 +8,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routeRepository = RouteRepository(
-      baseUrl: "https://us-central1/<project-id>.cloudfunctions.net",
+      baseUrl: "http://127.0.0.1:5001/hany-hh/us-central1/route",
     );
 
     return MaterialApp(

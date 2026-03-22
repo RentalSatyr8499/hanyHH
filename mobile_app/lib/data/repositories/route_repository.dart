@@ -64,13 +64,6 @@ class RouteRepository {
       "preferences": preferences,
     });
 
-    print("📤 JSON being sent to backend:");
-    print(body);
-
-    // Return a dummy RouteModel or throw for now
-    throw UnimplementedError("Backend not ready — printed JSON instead.");
-
-/*
     // 2. Send coordinates to your backend
     final response = await http.post(
       Uri.parse('$baseUrl/route'),
@@ -84,7 +77,7 @@ class RouteRepository {
 
     final json = jsonDecode(response.body);
     return RouteModel.fromJson(json['route']);
-*/
+
   }
 
 }

@@ -2,7 +2,7 @@
 
 > **Community maps, smarter routes.**
 
-**AccessBilly Compass** is our **HooHacks (Accessibility track)** Flutter app: **accessibility-aware routing** and **crowdsourced points** (ratings, lookups, adds). You ask for routes that fit real constraints, not just the shortest line. How you move changes day to day (energy, pain, gear), so you set **per-trip** preferences (stairs, wheelchair-only, benches, indoor, etc.) and send that with the route request. The community side fills in what big maps skip: what’s actually true on the ground.
+**AccessBilly Compass** is our **HooHacks (Finance track)** Flutter app: **accessibility-aware routing** and **crowdsourced points** (ratings, lookups, adds). You ask for routes that fit real constraints, not just the shortest line. How you move changes day to day (energy, pain, gear), so you set **per-trip** preferences (stairs, wheelchair-only, benches, indoor, etc.) and send that with the route request. The community side fills in what big maps skip: what’s actually true on the ground.
 
 ## Why this matters
 

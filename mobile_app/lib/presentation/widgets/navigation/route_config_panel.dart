@@ -1,37 +1,50 @@
 import 'package:flutter/material.dart';
+import '../../../domain/entities/route_request.dart';
 
-class RouteConfigPanel extends StatelessWidget {
-  const RouteConfigPanel({super.key});
+class RouteConfigPanel extends StatefulWidget {
+  final RouteRequest request;
 
+  const RouteConfigPanel({super.key, required this.request});
+
+  @override
+  State<RouteConfigPanel> createState() => _RouteConfigPanelState();
+}
+
+class _RouteConfigPanelState extends State<RouteConfigPanel> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CheckboxListTile(
           title: const Text('No stairs'),
-          value: true,
-          onChanged: (_) {},
+          value: widget.request.avoidStairs,
+          onChanged: (value) {
+            setState(() => widget.request.avoidStairs = value!);
+          },
         ),
         CheckboxListTile(
           title: const Text('Wheelchair only'),
-          value: false,
-          onChanged: (_) {},
+          value: widget.request.wheelchairOnly,
+          onChanged: (value) {
+            setState(() => widget.request.wheelchairOnly = value!);
+          },
         ),
         CheckboxListTile(
           title: const Text('Need benches'),
-          value: false,
-          onChanged: (_) {},
+          value: widget.request.needBenches,
+          onChanged: (value) {
+            setState(() => widget.request.needBenches = value!);
+          },
         ),
-        const SizedBox(height: 12),
-        const Text('Max route time (minutes)'),
-        Slider(
-          value: 20,
-          min: 5,
-          max: 60,
-          onChanged: (_) {},
+        CheckboxListTile(
+          title: const Text('Indoor only'),
+          value: widget.request.indoorOnly,
+          onChanged: (value) {
+            setState(() => widget.request.indoorOnly = value!);
+          },
         ),
       ],
     );
   }
 }
+

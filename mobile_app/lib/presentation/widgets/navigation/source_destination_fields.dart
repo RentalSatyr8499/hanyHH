@@ -1,26 +1,45 @@
 import 'package:flutter/material.dart';
+import '../../../domain/entities/route_request.dart';
 
 class SourceDestinationFields extends StatelessWidget {
-  const SourceDestinationFields({super.key});
+  final RouteRequest request;
+  final void Function(String) onSourceChanged;
+  final void Function(String) onDestinationChanged;
+
+  const SourceDestinationFields({
+    super.key,
+    required this.request,
+    required this.onSourceChanged,
+    required this.onDestinationChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: const [
+      children: [
         TextField(
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: 'Source',
             prefixIcon: Icon(Icons.my_location),
           ),
+          onChanged: (value) {
+            request.source = value;
+            onSourceChanged(value);
+          }
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         TextField(
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: 'Destination',
             prefixIcon: Icon(Icons.location_on),
           ),
+          onChanged: (value) {
+            request.destination = value;
+            onDestinationChanged(value);
+          }
         ),
       ],
     );
   }
 }
+

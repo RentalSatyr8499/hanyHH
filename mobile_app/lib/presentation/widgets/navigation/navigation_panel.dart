@@ -1,27 +1,49 @@
 import 'package:flutter/material.dart';
 import 'source_destination_fields.dart';
 import 'route_config_panel.dart';
+import '../../../domain/entities/route_request.dart';
 
 class NavigationPanel extends StatelessWidget {
-  const NavigationPanel({super.key});
+  final RouteRequest request;
+  final VoidCallback onFindRoute;
+
+  final void Function(String) onSourceChanged;
+  final void Function(String) onDestinationChanged;
+
+  const NavigationPanel({
+    super.key,
+    required this.request,
+    required this.onFindRoute,
+    required this.onSourceChanged,
+    required this.onDestinationChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: const [
-          Expanded(
-            flex: 3,
-            child: SourceDestinationFields(),
+    return Column(
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(
+                child: SourceDestinationFields(
+                  request: request,
+                  onSourceChanged: onSourceChanged,
+                  onDestinationChanged: onDestinationChanged,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: RouteConfigPanel(request: request),
+              ),
+            ],
           ),
-          SizedBox(width: 16),
-          Expanded(
-            flex: 2,
-            child: RouteConfigPanel(),
-          ),
-        ],
-      ),
+        ),
+        ElevatedButton(
+          onPressed: onFindRoute,
+          child: const Text("Find Accessible Route"),
+        ),
+      ],
     );
   }
 }

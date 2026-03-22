@@ -31,6 +31,48 @@ def fetch_edges() -> List[dict]:
     return edges
 
 
+def fetch_accessibility_reports() -> List[dict]:
+    db = firestore.client()
+    docs = db.collection("accessibility_reports").where("status", "==", "active").stream()
+
+    reports: List[dict] = []
+    for doc in docs:
+        data = doc.to_dict()
+        data["id"] = doc.id
+        reports.append(data)
+
+    return reports
+
+
+def save_accessibility_report(report: dict, edge_id: str) -> str:
+    db = firestore.client()
+    doc_ref = db.collection("accessibility_reports").document()
+
+    doc_ref.set({
+        "edgeId": edge_id,
+        "type": report["type"],
+        "lat": float(report["lat"]),
+        "lng": float(report["lng"]),
+        "description": report.get("description", ""),
+        "status": "active",
+        "createdAt": firestore.SERVER_TIMESTAMP,
+    })
+
+    return doc_ref.id
+
+
+def build_reports_by_edge(reports: List[dict]) -> Dict[str, List[dict]]:
+    reports_by_edge: Dict[str, List[dict]] = {}
+
+    for report in reports:
+        edge_id = report.get("edgeId")
+        if not edge_id:
+            continue
+        reports_by_edge.setdefault(edge_id, []).append(report)
+
+    return reports_by_edge
+
+
 def haversine_meters(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
     r = 6371000.0
 
@@ -45,6 +87,30 @@ def haversine_meters(lat1: float, lng1: float, lat2: float, lng2: float) -> floa
     )
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return r * c
+
+
+def point_to_segment_distance_meters(
+    px: float, py: float,
+    ax: float, ay: float,
+    bx: float, by: float,
+) -> float:
+    abx = bx - ax
+    aby = by - ay
+    apx = px - ax
+    apy = py - ay
+
+    ab_len_sq = abx * abx + aby * aby
+
+    if ab_len_sq == 0:
+        return haversine_meters(py, px, ay, ax)
+
+    t = (apx * abx + apy * aby) / ab_len_sq
+    t = max(0.0, min(1.0, t))
+
+    closest_x = ax + t * abx
+    closest_y = ay + t * aby
+
+    return haversine_meters(py, px, closest_y, closest_x)
 
 
 def find_nearest_vertex_id(vertices: Dict[str, dict], point: dict) -> str:
@@ -67,6 +133,48 @@ def find_nearest_vertex_id(vertices: Dict[str, dict], point: dict) -> str:
         raise ValueError("No vertices available in database.")
 
     return best_id
+
+
+def find_nearest_edge_id(
+    edges: List[dict],
+    vertices: Dict[str, dict],
+    point: dict,
+) -> str:
+    target_lat = float(point["lat"])
+    target_lng = float(point["lng"])
+
+    best_edge_id = None
+    best_dist = float("inf")
+
+    for edge in edges:
+        from_id = edge.get("fromVertexId")
+        to_id = edge.get("toVertexId")
+
+        if from_id not in vertices or to_id not in vertices:
+            continue
+
+        from_v = vertices[from_id]
+        to_v = vertices[to_id]
+
+        ax = float(from_v["longitude"])
+        ay = float(from_v["latitude"])
+        bx = float(to_v["longitude"])
+        by = float(to_v["latitude"])
+
+        dist = point_to_segment_distance_meters(
+            target_lng, target_lat,
+            ax, ay,
+            bx, by,
+        )
+
+        if dist < best_dist:
+            best_dist = dist
+            best_edge_id = edge["id"]
+
+    if best_edge_id is None:
+        raise ValueError("No edges available in database.")
+
+    return best_edge_id
 
 
 def build_graph(edges: List[dict]) -> Dict[str, List[dict]]:
@@ -94,7 +202,33 @@ def build_graph(edges: List[dict]) -> Dict[str, List[dict]]:
     return graph
 
 
-def edge_cost(edge: dict, prefs: dict) -> float:
+def effective_edge(edge: dict, reports_by_edge: Dict[str, List[dict]]) -> dict:
+    modified = edge.copy()
+    base_edge_id = edge["id"].replace("_reverse", "")
+    reports = reports_by_edge.get(base_edge_id, [])
+
+    for report in reports:
+        report_type = report.get("type")
+
+        if report_type == "ramp":
+            modified["hasStairs"] = False
+            modified["isAccessible"] = True
+
+        elif report_type == "bench":
+            modified["hasBench"] = True
+
+        elif report_type == "elevator":
+            modified["isAccessible"] = True
+
+        elif report_type == "broken_elevator":
+            modified["isAccessible"] = False
+
+    return modified
+
+
+def edge_cost(edge: dict, prefs: dict, reports_by_edge: Dict[str, List[dict]]) -> float:
+    edge = effective_edge(edge, reports_by_edge)
+
     if not edge.get("routePossible", True):
         return float("inf")
 
@@ -113,8 +247,7 @@ def edge_cost(edge: dict, prefs: dict) -> float:
     if prefs.get("hasHill", False) and float(edge.get("slopeLevel", 0)) <= 0:
         return float("inf")
 
-    cost = float(edge.get("timeSeconds", 0))
-    return cost
+    return float(edge.get("timeSeconds", 0))
 
 
 def shortest_path(
@@ -122,6 +255,7 @@ def shortest_path(
     end_id: str,
     graph: Dict[str, List[dict]],
     prefs: dict,
+    reports_by_edge: Dict[str, List[dict]],
 ) -> Optional[Tuple[List[str], float]]:
     pq: List[Tuple[float, str]] = [(0.0, start_id)]
     distances: Dict[str, float] = {start_id: 0.0}
@@ -140,7 +274,7 @@ def shortest_path(
 
         for edge in graph.get(current, []):
             next_vertex = edge["toVertexId"]
-            cost = edge_cost(edge, prefs)
+            cost = edge_cost(edge, prefs, reports_by_edge)
 
             if cost == float("inf"):
                 continue
@@ -179,6 +313,7 @@ def build_route_response(
     vertices: Dict[str, dict],
     graph: Dict[str, List[dict]],
     prefs: dict,
+    reports_by_edge: Dict[str, List[dict]],
 ) -> dict:
     coordinates: List[List[float]] = []
     steps: List[dict] = []
@@ -208,6 +343,9 @@ def build_route_response(
 
         edge = find_edge_between(graph, from_id, to_id)
         step_duration = float(edge.get("timeSeconds", 0)) if edge else 0.0
+
+        if edge:
+            edge = effective_edge(edge, reports_by_edge)
 
         steps.append({
             "instruction": f"Go from {from_v.get('name', from_id)} to {to_v.get('name', to_id)}",
@@ -240,6 +378,18 @@ def build_route_response(
                     "location": {
                         "lat": from_lat,
                         "lng": from_lng
+                    }
+                })
+
+            base_edge_id = edge["id"].replace("_reverse", "")
+            reports = reports_by_edge.get(base_edge_id, [])
+            for report in reports:
+                accessibility_notes.append({
+                    "type": report.get("type", "reported_feature"),
+                    "description": report.get("description", f"Reported {report.get('type', 'feature')} near this segment"),
+                    "location": {
+                        "lat": float(report.get("lat", from_lat)),
+                        "lng": float(report.get("lng", from_lng))
                     }
                 })
 
@@ -282,7 +432,7 @@ def build_route_response(
                 "lng": float(vertices[path[0]]["longitude"])
             }
         })
-    
+
     if prefs.get("hasHill", False):
         accessibility_notes.append({
             "type": "hill_required",

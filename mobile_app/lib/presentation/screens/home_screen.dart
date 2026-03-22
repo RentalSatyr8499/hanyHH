@@ -5,6 +5,9 @@ import '../../../domain/entities/route_request.dart';
 import '../../data/repositories/route_repository.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mbx;
 import '../../data/services/location_service.dart';
+import 'package:flutter/services.dart';   // for rootBundle, ByteData
+import '../map/app_map_controller.dart';
+
 
 class HomeScreen extends StatefulWidget {
   final RouteRepository routeRepository;
@@ -18,55 +21,29 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+
 class _HomeScreenState extends State<HomeScreen> {
   final RouteRequest request = RouteRequest();
   late final RouteRepository routeRepository;
-  final LocationService locationService = LocationService();
-
-  mbx.MapboxMap? mapController;
-  mbx.PointAnnotationManager? annotationManager;
-  mbx.PointAnnotation? sourcePin;
-  mbx.PointAnnotation? destinationPin;
-
-  void _onSourceChanged(String input) {
-    final pos = locationService.parseLatLng(input);
-    if (pos == null || mapController == null) return;
-
-    mapController!.flyTo(
-      mbx.CameraOptions(
-        center: mbx.Point(coordinates: pos),
-        zoom: 14,
-      ),
-      mbx.MapAnimationOptions(
-        duration: 1500, // milliseconds
-      ),
-    );
-  }
-  void _onDestinationChanged(String input) {
-    return;
-  }
-
-  void onMapCreated(mbx.MapboxMap controller) {
-    mapController = controller;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      annotationManager = await controller.annotations.createPointAnnotationManager();
-
-      controller.setCamera(
-        mbx.CameraOptions(
-          center: mbx.Point(coordinates: mbx.Position(0, 0)),
-          zoom: 1.3,
-        ),
-      );
-    });
-  }
-
-
+  final AppMapController mapController = AppMapController();
 
   @override
   void initState() {
     super.initState();
     routeRepository = widget.routeRepository;
+  }
+  
+  void _onMapCreated(mbx.MapboxMap controller) {
+    mapController.init(controller);
+  }
+  void _onSourceChanged(String input) {
+    request.source = input;
+    mapController.setSource(input);
+  }
+
+  void _onDestinationChanged(String input) {
+    request.destination = input;
+    mapController.setDestination(input);
   }
 
   void _onFindRoutePressed() async {
@@ -89,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Column(
         children: [
-          Expanded(flex: 6, child: MapView(onMapCreated: onMapCreated)),
+          Expanded(flex: 6, child: MapView(onMapCreated: _onMapCreated)),
           Expanded(
             flex: 4,
             child: NavigationPanel(
@@ -103,5 +80,28 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  mbx.CoordinateBounds _boundsForTwoPoints(mbx.Position a, mbx.Position b) {
+      final minLng = a.lng < b.lng ? a.lng : b.lng;
+      final maxLng = a.lng > b.lng ? a.lng : b.lng;
+      final minLat = a.lat < b.lat ? a.lat : b.lat;
+      final maxLat = a.lat > b.lat ? a.lat : b.lat;
+
+      final paddingFactor = 0.2;
+      final lngPadding = (maxLng - minLng) * paddingFactor;
+      final latPadding = (maxLat - minLat) * paddingFactor;
+
+      final paddedMinLng = minLng - lngPadding;
+      final paddedMaxLng = maxLng + lngPadding;
+      final paddedMinLat = minLat - latPadding;
+      final paddedMaxLat = maxLat + latPadding;
+
+      return mbx.CoordinateBounds(
+        southwest: mbx.Point(coordinates: mbx.Position(paddedMinLng, paddedMinLat)),
+        northeast: mbx.Point(coordinates: mbx.Position(paddedMaxLng, paddedMaxLat)),
+        infiniteBounds: false,
+      );
+  }
+
 }
 

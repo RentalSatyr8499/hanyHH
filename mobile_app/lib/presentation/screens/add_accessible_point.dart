@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../data/repositories/accessibility_repository.dart';
 
 class AddAccessiblePointScreen extends StatefulWidget {
   const AddAccessiblePointScreen({super.key});
@@ -12,15 +13,16 @@ class _AddAccessiblePointScreenState extends State<AddAccessiblePointScreen> {
   String? featureType;
 
   final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController notesController = TextEditingController();
   final TextEditingController latitudeController = TextEditingController();
   final TextEditingController longitudeController = TextEditingController();
+
+  final AccessibilityRepository accessibilityRepository =
+      AccessibilityRepository();
 
   bool isSubmitting = false;
 
   Future<void> _submitAccessiblePoint() async {
     final description = descriptionController.text.trim();
-    final notes = notesController.text.trim();
     final latitude = double.tryParse(latitudeController.text.trim());
     final longitude = double.tryParse(longitudeController.text.trim());
 
@@ -64,22 +66,26 @@ class _AddAccessiblePointScreenState extends State<AddAccessiblePointScreen> {
     });
 
     try {
-      final payload = {
-        'type': featureType,
-        'description': description,
-        'notes': notes,
-        'latitude': latitude,
-        'longitude': longitude,
-      };
-
-      debugPrint('Submitting accessible point: $payload');
-
-      // TODO: replace this with backend / Firestore call
+      final result = await accessibilityRepository.reportAccessibilityFeature(
+        type: featureType!,
+        lat: latitude,
+        lng: longitude,
+        description: description,
+      );
 
       if (!mounted) return;
+
+      final matchedEdgeMessage = result.matchedEdgeId == null
+          ? ''
+          : '\nMatched edge: ${result.matchedEdgeId}';
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Accessible point submitted')),
+        SnackBar(
+          content: Text('${result.message}$matchedEdgeMessage'),
+          duration: const Duration(seconds: 3),
+        ),
       );
+
       Navigator.pop(context);
     } catch (e) {
       if (!mounted) return;
@@ -98,7 +104,6 @@ class _AddAccessiblePointScreenState extends State<AddAccessiblePointScreen> {
   @override
   void dispose() {
     descriptionController.dispose();
-    notesController.dispose();
     latitudeController.dispose();
     longitudeController.dispose();
     super.dispose();
@@ -125,28 +130,16 @@ class _AddAccessiblePointScreenState extends State<AddAccessiblePointScreen> {
                 value: featureType,
                 items: const [
                   DropdownMenuItem(
-                    value: 'ramp',
-                    child: Text('Wheelchair Ramp'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'elevator',
-                    child: Text('Elevator'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'stairs',
-                    child: Text('Stairs'),
-                  ),
-                  DropdownMenuItem(
                     value: 'bench',
                     child: Text('Bench'),
                   ),
                   DropdownMenuItem(
-                    value: 'hill',
-                    child: Text('Hill / Slope'),
+                    value: 'ramp',
+                    child: Text('Ramp'),
                   ),
                   DropdownMenuItem(
-                    value: 'other',
-                    child: Text('Other'),
+                    value: 'elevator',
+                    child: Text('Elevator'),
                   ),
                 ],
                 onChanged: (value) {
@@ -170,22 +163,7 @@ class _AddAccessiblePointScreenState extends State<AddAccessiblePointScreen> {
                 textInputAction: TextInputAction.next,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'Example: Steep hill near Rice Hall entrance',
-                ),
-                maxLines: 2,
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'Additional Notes (optional)',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: notesController,
-                textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Anything else helpful?',
+                  hintText: 'Example: Bench near Rice Hall entrance',
                 ),
                 maxLines: 2,
               ),
@@ -204,8 +182,7 @@ class _AddAccessiblePointScreenState extends State<AddAccessiblePointScreen> {
                 ),
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'e.g. 38.0317',
-                  helperText: 'Enter decimal coordinates',
+                  hintText: 'e.g. 38.03258',
                 ),
               ),
               const SizedBox(height: 24),
@@ -223,8 +200,7 @@ class _AddAccessiblePointScreenState extends State<AddAccessiblePointScreen> {
                 ),
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'e.g. -78.5109',
-                  helperText: 'Enter decimal coordinates',
+                  hintText: 'e.g. -78.510832',
                 ),
                 onSubmitted: (_) => _submitAccessiblePoint(),
               ),

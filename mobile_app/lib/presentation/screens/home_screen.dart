@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mbx;
+
 import '../widgets/map/map_view.dart';
 import '../widgets/navigation/navigation_panel.dart';
+import '../map/app_map_controller.dart';
+import 'add_accessible_point.dart';
+
 import '../../../domain/entities/route_request.dart';
 import '../../data/repositories/route_repository.dart';
-import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mbx;
-import '../../data/services/location_service.dart';
-import 'package:flutter/services.dart';   // for rootBundle, ByteData
-import '../map/app_map_controller.dart';
-
 
 class HomeScreen extends StatefulWidget {
   final RouteRepository routeRepository;
@@ -20,7 +20,6 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-
 
 class _HomeScreenState extends State<HomeScreen> {
   final RouteRequest request = RouteRequest();
@@ -36,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onMapCreated(mbx.MapboxMap controller) {
     mapController.init(controller);
   }
+
   void _onSourceChanged(String input) {
     request.source = input;
     mapController.setSource(input);
@@ -61,12 +61,29 @@ class _HomeScreenState extends State<HomeScreen> {
     mapController.drawRoute(route.toPositions());
   }
 
+  void _openAddAccessiblePointScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const AddAccessiblePointScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: _openAddAccessiblePointScreen,
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Column(
         children: [
-          Expanded(flex: 6, child: MapView(onMapCreated: _onMapCreated)),
+          Expanded(
+            flex: 6,
+            child: MapView(onMapCreated: _onMapCreated),
+          ),
           Expanded(
             flex: 4,
             child: NavigationPanel(
@@ -82,26 +99,28 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   mbx.CoordinateBounds _boundsForTwoPoints(mbx.Position a, mbx.Position b) {
-      final minLng = a.lng < b.lng ? a.lng : b.lng;
-      final maxLng = a.lng > b.lng ? a.lng : b.lng;
-      final minLat = a.lat < b.lat ? a.lat : b.lat;
-      final maxLat = a.lat > b.lat ? a.lat : b.lat;
+    final minLng = a.lng < b.lng ? a.lng : b.lng;
+    final maxLng = a.lng > b.lng ? a.lng : b.lng;
+    final minLat = a.lat < b.lat ? a.lat : b.lat;
+    final maxLat = a.lat > b.lat ? a.lat : b.lat;
 
-      final paddingFactor = 0.2;
-      final lngPadding = (maxLng - minLng) * paddingFactor;
-      final latPadding = (maxLat - minLat) * paddingFactor;
+    final paddingFactor = 0.2;
+    final lngPadding = (maxLng - minLng) * paddingFactor;
+    final latPadding = (maxLat - minLat) * paddingFactor;
 
-      final paddedMinLng = minLng - lngPadding;
-      final paddedMaxLng = maxLng + lngPadding;
-      final paddedMinLat = minLat - latPadding;
-      final paddedMaxLat = maxLat + latPadding;
+    final paddedMinLng = minLng - lngPadding;
+    final paddedMaxLng = maxLng + lngPadding;
+    final paddedMinLat = minLat - latPadding;
+    final paddedMaxLat = maxLat + latPadding;
 
-      return mbx.CoordinateBounds(
-        southwest: mbx.Point(coordinates: mbx.Position(paddedMinLng, paddedMinLat)),
-        northeast: mbx.Point(coordinates: mbx.Position(paddedMaxLng, paddedMaxLat)),
-        infiniteBounds: false,
-      );
+    return mbx.CoordinateBounds(
+      southwest: mbx.Point(
+        coordinates: mbx.Position(paddedMinLng, paddedMinLat),
+      ),
+      northeast: mbx.Point(
+        coordinates: mbx.Position(paddedMaxLng, paddedMaxLat),
+      ),
+      infiniteBounds: false,
+    );
   }
-
 }
-

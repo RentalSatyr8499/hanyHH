@@ -1,6 +1,6 @@
 # hanyHH
 
-Hackathon project workspace. The **Flutter mobile app** (HooHacks submission) lives under **[`mobile_app/`](mobile_app/)**.
+Hackathon project workspace. **AccessBilly Compass** (HooHacks submission): Flutter app under **[`mobile_app/`](mobile_app/)**.
 
 - **Documentation:** [`mobile_app/README.md`](mobile_app/README.md): architecture, tech stack, iOS setup, Finance track  
 - **Asset credits:** [`mobile_app/ATTRIBUTIONS.md`](mobile_app/ATTRIBUTIONS.md) (Unsplash, Freepik, DaFont, Flaticon, Freesound, Noiz AI)  

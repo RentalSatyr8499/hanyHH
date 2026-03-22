@@ -1,8 +1,8 @@
-# Accessible Routing (HooHacks)
+# AccessBilly Compass (HooHacks)
 
-> Community-centered navigation: routes and places shaped by people who actually move through the world, not only what the default map shows.
+> **Community maps, smarter routes.**
 
-We built a Flutter app for **HooHacks (Finance track)** around **accessibility-aware routing** and **crowdsourced points** (ratings, lookups, adds). Tagline in one line: **community-based navigation** (people on the ground, not only the default map). You ask for routes that fit real constraints, not just the shortest line. How you move changes day to day (energy, pain, gear), so you set **per-trip** preferences (stairs, wheelchair-only, benches, indoor, etc.) and send that with the route request. The community side fills in what big maps skip: what’s actually true on the ground.
+**AccessBilly Compass** is our **HooHacks (Finance track)** Flutter app: **accessibility-aware routing** and **crowdsourced points** (ratings, lookups, adds). You ask for routes that fit real constraints, not just the shortest line. How you move changes day to day (energy, pain, gear), so you set **per-trip** preferences (stairs, wheelchair-only, benches, indoor, etc.) and send that with the route request. The community side fills in what big maps skip: what’s actually true on the ground.
 
 ## Why this matters
 
@@ -179,6 +179,7 @@ Timed outline and Q&A beats are in [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md) so this fi
 
 ## Team
 
+- **App:** AccessBilly Compass  
 - Event: HooHacks  
 - Track: Finance  
 - Team: *(names)*  

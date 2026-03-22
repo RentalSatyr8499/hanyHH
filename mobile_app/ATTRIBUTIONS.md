@@ -1,6 +1,6 @@
 # Third-party assets and licenses
 
-This file lists sources and license terms for creative assets used in **Accessible Routing**. Keep it with the project for submissions, demos, and any store release. **Fonts and stock terms can restrict commercial use** — verify before publishing beyond a school/hackathon context.
+This file lists sources and license terms for creative assets used in **AccessBilly Compass**. Keep it with the project for submissions, demos, and any store release. **Fonts and stock terms can restrict commercial use** — verify before publishing beyond a school/hackathon context.
 
 ---
 

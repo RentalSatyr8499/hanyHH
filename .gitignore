@@ -65,5 +65,8 @@ node_modules/
 # dotenv environment variables file
 .env
 
+# Local Mapbox token (copy default.env.example to default.env)
+mobile_app/assets/env/default.env
+
 # dataconnect generated files
 .dataconnect

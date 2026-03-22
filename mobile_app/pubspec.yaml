@@ -44,18 +44,22 @@ dependencies:
   geolocator: ^10.0.0
   flutter_dotenv: ^5.1.0
   http: ^1.2.0
+  audioplayers: ^6.0.0
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.13.1
   flutter_test:
     sdk: flutter
-
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
-  
+flutter_icons:
+  ios: true
+  android: true
+  image_path: "assets/logo.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -70,5 +74,14 @@ flutter:
   assets:
     - .env
     - assets/marker.png
+    - assets/wood-background.jpg
+    - assets/wood-plank.png
+    - assets/find-route.mp3
     - assets/cowboy_hat.png
- 
+  fonts:
+    - family: CustomFont1
+      fonts:
+        - asset: assets/font1.ttf
+    - family: CustomFont2
+      fonts:
+        - asset: assets/font2.otf

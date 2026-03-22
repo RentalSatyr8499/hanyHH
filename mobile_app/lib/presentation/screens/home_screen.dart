@@ -37,16 +37,32 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onSourceChanged(String input) {
-    request.source = input;
+    setState(() {
+      request.source = input;
+    });
     mapController.setSource(input);
   }
 
   void _onDestinationChanged(String input) {
-    request.destination = input;
+    setState(() {
+      request.destination = input;
+    });
     mapController.setDestination(input);
   }
 
   void _onFindRoutePressed() async {
+    if (request.source == null ||
+        request.source!.trim().isEmpty ||
+        request.destination == null ||
+        request.destination!.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter both source and destination'),
+        ),
+      );
+      return;
+    }
+
     final route = await routeRepository.getRoute(
       request.source!,
       request.destination!,
@@ -73,27 +89,26 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: _openAddAccessiblePointScreen,
-        child: const Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      body: Column(
-        children: [
-          Expanded(
-            flex: 6,
-            child: MapView(onMapCreated: _onMapCreated),
-          ),
-          Expanded(
-            flex: 4,
-            child: NavigationPanel(
-              request: request,
-              onFindRoute: _onFindRoutePressed,
-              onSourceChanged: _onSourceChanged,
-              onDestinationChanged: _onDestinationChanged,
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            Expanded(
+              flex: 6,
+              child: MapView(onMapCreated: _onMapCreated),
             ),
-          ),
-        ],
+            Expanded(
+              flex: 4,
+              child: NavigationPanel(
+                request: request,
+                onFindRoute: _onFindRoutePressed,
+                onAddAccessiblePoint: _openAddAccessiblePointScreen,
+                onSourceChanged: _onSourceChanged,
+                onDestinationChanged: _onDestinationChanged,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

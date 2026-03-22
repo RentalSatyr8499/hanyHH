@@ -121,7 +121,7 @@ class _WoodButton extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                fontFamily: 'CustomFont2',
+                fontFamily: 'CustomFont1',
                 fontSize: fontSize,
                 fontWeight: FontWeight.w700,
                 color: const Color(0xFF2E1E12),

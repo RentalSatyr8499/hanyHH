@@ -1,5 +1,6 @@
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mbx;
 import 'dart:convert';
+import 'dart:async'; // Required for Timer/Delay
 
 class MapRouteService {
   static const String _sourceId = "route-source";
@@ -8,49 +9,53 @@ class MapRouteService {
   Future<void> drawRoute(mbx.MapboxMap map, List<mbx.Position> coords) async {
     if (coords.isEmpty) return;
 
-    final line = mbx.LineString(coordinates: coords);
-    
-    // 1. Handle Source (Safe update or create)
-    await _updateOrCreateSource(map, line);
+    // 1. Ensure the Layer and Source exist first (empty or first point)
+    await _prepareRouteLayer(map);
 
-    // 2. Handle Layer (Safe check existence)
-    bool layerExists = false;
+    // 2. Start the animation loop
+    await _animateLine(map, coords);
+  }
+
+  Future<void> _prepareRouteLayer(mbx.MapboxMap map) async {
+    // Check if source exists, if not, create it with an empty feature
     try {
-      final layer = await map.style.getLayer(_layerId);
-      layerExists = (layer != null);
+      final existing = await map.style.getSource(_sourceId);
+      if (existing == null) {
+        await map.style.addSource(mbx.GeoJsonSource(id: _sourceId, data: '{"type": "FeatureCollection", "features": []}'));
+      }
     } catch (e) {
-      layerExists = false; 
+       await map.style.addSource(mbx.GeoJsonSource(id: _sourceId, data: '{"type": "FeatureCollection", "features": []}'));
     }
 
-    if (!layerExists) {
+    // Check if layer exists, if not, create it
+    try {
+      final layer = await map.style.getLayer(_layerId);
+      if (layer == null) await _addRouteLayer(map);
+    } catch (e) {
       await _addRouteLayer(map);
     }
   }
 
-  Future<void> _updateOrCreateSource(mbx.MapboxMap map, mbx.LineString line) async {
-    final feature = mbx.Feature(id: "route-feature-id", geometry: line);
-    final String geojsonString = jsonEncode(feature.toJson());
+  Future<void> _animateLine(mbx.MapboxMap map, List<mbx.Position> fullCoords) async {
+    final List<mbx.Position> currentSegment = [];
+    
+    // Adjust steps for speed: i += 1 is smooth, i += 5 is faster
+    for (int i = 0; i < fullCoords.length; i++) {
+      currentSegment.add(fullCoords[i]);
 
-    bool sourceExists = false;
-    try {
-      final existing = await map.style.getSource(_sourceId);
-      sourceExists = (existing != null);
-    } catch (e) {
-      sourceExists = false;
-    }
+      final line = mbx.LineString(coordinates: currentSegment);
+      final feature = mbx.Feature(id: "route-feature-id", geometry: line);
+      final String geojsonString = jsonEncode(feature.toJson());
 
-    if (sourceExists) {
+      // Update the source data property 
       await map.style.setStyleSourceProperty(_sourceId, 'data', geojsonString);
-    } else {
-      await map.style.addSource(
-        mbx.GeoJsonSource(id: _sourceId, data: geojsonString),
-      );
+
+      // Control the animation speed (e.g., 16ms for ~60fps feel)
+      await Future.delayed(const Duration(milliseconds: 20));
     }
   }
 
   Future<void> _addRouteLayer(mbx.MapboxMap map) async {
-    // Note: Depending on your plugin version, you might need 
-    // to pass properties in the constructor or via setters.
     final lineLayer = mbx.LineLayer(
       id: _layerId,
       sourceId: _sourceId,
@@ -59,7 +64,6 @@ class MapRouteService {
       lineJoin: mbx.LineJoin.ROUND,
       lineCap: mbx.LineCap.ROUND,
     );
-
     await map.style.addLayer(lineLayer);
   }
 }

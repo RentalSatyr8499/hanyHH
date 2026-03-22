@@ -1,4 +1,7 @@
 PODS:
+  - audioplayers_darwin (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - Flutter (1.0.0)
   - geolocator_apple (1.2.0):
     - Flutter
@@ -15,12 +18,17 @@ PODS:
     - MapboxCommon (= 24.20.0)
     - MapboxCoreMaps (= 11.20.0)
     - Turf (= 4.0.0)
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - Turf (4.0.0)
 
 DEPENDENCIES:
+  - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/darwin`)
   - Flutter (from `Flutter`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/darwin`)
   - mapbox_maps_flutter (from `.symlinks/plugins/mapbox_maps_flutter/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
 
 SPEC REPOS:
   trunk:
@@ -30,20 +38,26 @@ SPEC REPOS:
     - Turf
 
 EXTERNAL SOURCES:
+  audioplayers_darwin:
+    :path: ".symlinks/plugins/audioplayers_darwin/darwin"
   Flutter:
     :path: Flutter
   geolocator_apple:
     :path: ".symlinks/plugins/geolocator_apple/darwin"
   mapbox_maps_flutter:
     :path: ".symlinks/plugins/mapbox_maps_flutter/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
 
 SPEC CHECKSUMS:
+  audioplayers_darwin: 835ced6edd4c9fc8ebb0a7cc9e294a91d99917d5
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   geolocator_apple: ab36aa0e8b7d7a2d7639b3b4e48308394e8cef5e
   mapbox_maps_flutter: 44507f2ccbe30dfe2bd49645e058887fb39bffde
   MapboxCommon: 704168d7d88ca727301912d0d8e7a0ecaf15a461
   MapboxCoreMaps: fda3725c8fd8ec72df35fa72555b335f98e40313
   MapboxMaps: fa67b83a454b89383580890a53a4585af094c218
+  path_provider_foundation: bb55f6dbba17d0dccd6737fe6f7f34fbd0376880
   Turf: c9eb11a65d96af58cac523460fd40fec5061b081
 
 PODFILE CHECKSUM: e30f02f9d1c72c47bb6344a0a748c9d268180865

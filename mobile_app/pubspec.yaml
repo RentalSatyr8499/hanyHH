@@ -45,7 +45,7 @@ dependencies:
   flutter_dotenv: ^5.1.0
   http: ^1.2.0
   audioplayers: ^6.0.0
-  
+
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_test:
@@ -78,6 +78,9 @@ flutter:
     - assets/wood-plank.png
     - assets/find-route.mp3
   fonts:
+      - family: CustomFont1
+        fonts:
+        - asset: assets/font1.ttf 
       - family: CustomFont2
         fonts:
           - asset: assets/font2.otf

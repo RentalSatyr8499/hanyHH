@@ -15,39 +15,104 @@ class SourceDestinationFields extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const customFont = TextStyle(
-      fontFamily: 'CustomFont2',
-      fontSize: 16,
-    );
-
     return Column(
       children: [
-        TextField(
-          style: customFont, // typed text
-          decoration: InputDecoration(
-            labelText: 'Source',
-            labelStyle: customFont, // floating label
-            hintStyle: customFont,  // non-floating label
-            prefixIcon: const Icon(Icons.my_location),
-          ),
-          onChanged: (value) {
-            request.source = value;
-            onSourceChanged(value);
-          },
+        _LocationField(
+          icon: Icons.my_location,
+          label: 'SOURCE:',
+          value: request.source ?? '',
+          onChanged: onSourceChanged,
         ),
-        const SizedBox(height: 12),
-        TextField(
-          style: customFont,
-          decoration: InputDecoration(
-            labelText: 'Destination',
-            labelStyle: customFont,
-            hintStyle: customFont,
-            prefixIcon: const Icon(Icons.location_on),
+        const SizedBox(height: 22),
+        _LocationField(
+          icon: Icons.location_on,
+          label: 'DESTINATION:',
+          value: request.destination ?? '',
+          onChanged: onDestinationChanged,
+        ),
+      ],
+    );
+  }
+}
+
+class _LocationField extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final ValueChanged<String> onChanged;
+
+  const _LocationField({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const labelStyle = TextStyle(
+      fontFamily: 'CustomFont2',
+      color: Colors.white,
+      fontSize: 20,
+      fontWeight: FontWeight.w700,
+      height: 1.0,
+    );
+
+    const valueStyle = TextStyle(
+      fontFamily: 'CustomFont2',
+      color: Colors.white,
+      fontSize: 18,
+      height: 1.2,
+    );
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 6),
+          child: Icon(
+            icon,
+            color: Colors.white,
+            size: 34,
           ),
-          onChanged: (value) {
-            request.destination = value;
-            onDestinationChanged(value);
-          },
+        ),
+        const SizedBox(width: 14),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: labelStyle),
+              const SizedBox(height: 4),
+              TextFormField(
+                initialValue: value,
+                onChanged: onChanged,
+                cursorColor: Colors.white,
+                style: valueStyle,
+                decoration: const InputDecoration(
+                  isDense: true,
+                  contentPadding: EdgeInsets.zero,
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.white70,
+                      width: 1.5,
+                    ),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.white,
+                      width: 2,
+                    ),
+                  ),
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.white70,
+                      width: 1.5,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );

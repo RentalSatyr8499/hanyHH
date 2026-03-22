@@ -75,6 +75,8 @@ class RouteRepository {
       }),
     );
 
+    print("BACKEND RESPONSE BODY: ${response.body}");
+    
     final json = jsonDecode(response.body);
     return RouteModel.fromJson(json['route']);
 

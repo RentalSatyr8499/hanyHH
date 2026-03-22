@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
-import '../widgets/map/map_view.dart';
-import '../widgets/navigation/navigation_panel.dart';
-import '../../../domain/entities/route_request.dart';
-import '../../data/repositories/route_repository.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mbx;
 
+import '../widgets/map/map_view.dart';
+import '../widgets/navigation/navigation_panel.dart';
 import '../map/app_map_controller.dart';
+import 'add_accessible_point.dart';
+
+import '../../../domain/entities/route_request.dart';
+import '../../data/repositories/route_repository.dart';
+
 import '../widgets/navigation/map_navigation_service.dart';
 import '../widgets/navigation/navigation_mode.dart' as nm;
 import '../widgets/navigation/navigation_controller.dart';
 import '../widgets/navigation/navigation_overlays.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class HomeScreen extends StatefulWidget {
   final RouteRepository routeRepository;
@@ -27,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final RouteRequest request = RouteRequest();
   late final RouteRepository routeRepository;
   final AppMapController mapController = AppMapController();
+  final AudioPlayer _player = AudioPlayer();
 
   nm.NavigationMode mode = nm.NavigationMode.idle;
   final NavigationController navController = NavigationController();
@@ -44,16 +49,34 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onSourceChanged(String input) {
-    request.source = input;
+    setState(() {
+      request.source = input;
+    });
     mapController.setSource(input);
   }
 
   void _onDestinationChanged(String input) {
-    request.destination = input;
+    setState(() {
+      request.destination = input;
+    });
     mapController.setDestination(input);
   }
 
   Future<void> _onFindRoutePressed() async {
+    if (request.source == null ||
+        request.source!.trim().isEmpty ||
+        request.destination == null ||
+        request.destination!.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter both source and destination'),
+        ),
+      );
+      return;
+    }
+    
+    _player.play(AssetSource('find-route.mp3'));
+
     final route = await routeRepository.getRoute(
       request.source!,
       request.destination!,
@@ -103,10 +126,21 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _openAddAccessiblePointScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const AddAccessiblePointScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: SafeArea(
+      bottom: false,
+      child: Stack(
         children: [
           Column(
             children: [
@@ -114,12 +148,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 flex: mode == nm.NavigationMode.navigating ? 10 : 6,
                 child: MapView(onMapCreated: _onMapCreated),
               ),
+
               if (mode != nm.NavigationMode.navigating)
                 Expanded(
                   flex: 4,
                   child: NavigationPanel(
                     request: request,
                     onFindRoute: _onFindRoutePressed,
+                    onAddAccessiblePoint: _openAddAccessiblePointScreen,
                     onSourceChanged: _onSourceChanged,
                     onDestinationChanged: _onDestinationChanged,
                   ),
@@ -162,8 +198,9 @@ class _HomeScreenState extends State<HomeScreen> {
               right: 20,
               child: EndRouteButton(onPressed: _endNavigation),
             ),
-        ],
-      ),
+          ],
+        ),
+      )
     );
   }
 }
